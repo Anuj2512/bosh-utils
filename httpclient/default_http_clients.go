@@ -55,3 +55,10 @@ func (f factory) New(insecureSkipVerify bool, certPool *x509.CertPool) *http.Cli
 
 	return client
 }
+
+func ReInitializeDefaultDialer() {
+	defaultDialer = SOCKS5DialFuncFromEnvironment((&net.Dialer{
+		Timeout:   30 * time.Second,
+		KeepAlive: 30 * time.Second,
+	}).Dial, proxy.NewSocks5Proxy(proxy.NewHostKey(), log.New(ioutil.Discard, "", log.LstdFlags), 1*time.Minute))
+}
